@@ -3,7 +3,25 @@ import type { NextPage } from "next";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import ReactAudioPlayer from "react-audio-player";
-import { render } from "react-dom";
+
+/*
+Finished:
+  Getting random track, getting like and storing
+
+TO DO:
+  IMPORTANT!
+  - Add IDs to track object
+    - This is so if there is a dupe in liked and current track, ignore, and can be used to set key
+  - Make a post request to create a playlist https://developer.spotify.com/console/post-playlists/
+    - Then add the tracks using the liked.uri https://developer.spotify.com/console/post-playlist-tracks/
+  Not so important
+  - Implement a UI
+  - Break down components so it's not messy
+
+Future:
+  - Make background color change depending on album cover
+  - Implement refresh until successful request
+*/
 
 const Home: NextPage = () => {
   const clientId = process.env.NEXT_PUBLIC_CLIENT_ID;
