@@ -22,14 +22,18 @@ TO DO:
 Future:
   - Make background color change depending on album cover
   - Implement refresh until successful request
+  - Explore mode - No login required
+  - Login mode - login required
 */
 
 const Home: NextPage = () => {
+  const redirectUri = "http://localhost:3000";
+  const authEndpoint = "https://accounts.spotify.com/authorize";
+  const scope = "playlist-modify-public playlist-modify-private";
   const clientId = process.env.NEXT_PUBLIC_CLIENT_ID;
   const clientSecret = process.env.NEXT_PUBLIC_CLIENT_SECRET;
   const [token, setToken] = useState("");
   const [track, setTrack] = useState({
-    id: "",
     name: "",
     artist: "",
     album: "",
@@ -39,11 +43,12 @@ const Home: NextPage = () => {
   });
   const [double, setDouble] = useState(false);
   const [liked, setLiked] = useState<any>({
-    id: [],
     name: [],
     uri: [],
   });
   const [autoplay, setAutoplay] = useState(false);
+  const [userToken, setUserToken] = useState("");
+  const [userID, setUserID] = useState("");
 
   // const [loop, setLoop] = useState(true);
 
@@ -107,12 +112,10 @@ const Home: NextPage = () => {
         offset: randomOffset,
       },
     }).then((res) => {
-      console.log(res);
       if (res.data.tracks.items.length === 0) {
-        getNewTrack(tok);
+        return getNewTrack(tok);
       } else {
         const item = res.data.tracks.items[randomTrack];
-        console.log(item);
         let str = "";
         const artistArr = item.artists;
         artistArr.map((artist: any, index: number) => {
@@ -120,7 +123,6 @@ const Home: NextPage = () => {
           else str += artist.name;
         });
         setTrack({
-          id: item.id,
           name: item.name,
           artist: str,
           album: item.album.images[0].url,
@@ -132,7 +134,6 @@ const Home: NextPage = () => {
       // setLoop(false);
     });
   };
-  console.log(track.name, track.prev);
 
   useEffect(() => {
     getToken().then(async (res) => {
@@ -156,7 +157,6 @@ const Home: NextPage = () => {
   const like = async () => {
     setDouble(true);
     setLiked({
-      id: [...liked.id, track.id],
       name: [...liked.name, track.name],
       uri: [...liked.uri, track.uri],
     });
@@ -177,22 +177,104 @@ const Home: NextPage = () => {
   };
 
   const updateLiked = () => {
-    const ids = liked.id.map((id: string) => id);
+    const uri = liked.uri.map((id: string) => id);
     return (
       <div>
         <div>
           {liked.name.map((name: string, i: number) => (
-            <div key={ids[i]}>{name}</div>
+            <div key={uri[i]}>{name}</div>
           ))}
         </div>
       </div>
     );
   };
 
+  useEffect(() => {
+    const hash: any = window.location.hash;
+    let t: any = window.localStorage.getItem("token");
+
+    if (!t && hash) {
+      t = hash
+        .substring(1)
+        .split("&")
+        .find((elem: string) => elem.startsWith("access_token"))
+        .split("=")[1];
+      window.location.hash = "";
+      window.localStorage.setItem("token", t);
+    }
+    setUserToken(t);
+    axios
+      .get("https://api.spotify.com/v1/me", {
+        headers: {
+          Authorization: `Bearer ${t}`,
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        setUserID(res.data.id);
+      });
+  }, []);
+
+  const logout = () => {
+    setUserToken("");
+    window.localStorage.removeItem("token");
+  };
+  const handleSubmit = async (event: any) => {
+    // Stop the form from submitting and refreshing the page.
+    event.preventDefault();
+    if (liked.name.length === 0) {
+      console.log("error making playlist");
+      return;
+    }
+
+    // Get data from the form.
+    const data = {
+      name: event.target.pname.value,
+      description: event.target.desc.value,
+      public: event.target.type.value,
+    };
+
+    // Send the data to the server in JSON format.
+    const JSONdata = JSON.stringify(data);
+    await axios
+      .post(`https://api.spotify.com/v1/users/${userID}/playlists`, JSONdata, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          "Content-Type": "application/json",
+        },
+      })
+      .then(async (res) => {
+        let str = "";
+        liked.uri.forEach((item: string) => {
+          str += item;
+          // if (liked.uri[liked.uri.length - 1] === item) return;
+          // else str += ",";
+        });
+        str = str.replaceAll(":", "%3A");
+        str = str.replaceAll(",", "%2C");
+        axios
+          .post(
+            `https://api.spotify.com/v1/playlists/${res.data.id}/tracks?uris=${str}`,
+            null,
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                Authorization: `Bearer ${userToken}`,
+              },
+            }
+          )
+          .then((_) => console.log("successfully added"))
+          .catch((err) => console.error(err));
+      })
+      .catch((err) => console.log(err));
+  };
+
   return (
+    // <div className="border-2 h-screen flex">
     <div>
-      {track.album != "" ? (
-        <div>
+      {track.name != "" ? (
+        <div className="m-auto">
           <div>
             {autoplay ? (
               <button onClick={() => setAutoplay(false)}>
@@ -220,7 +302,58 @@ const Home: NextPage = () => {
           <button disabled={double} onClick={dislike}>
             Dislike
           </button>
-          <div>{updateLiked()}</div>
+          <div>{updateLiked()}</div>{" "}
+          {userToken ? (
+            <div>
+              <div>
+                <form onSubmit={handleSubmit}>
+                  <label htmlFor="pname"></label>
+                  <input
+                    type="text"
+                    id="pname"
+                    name="pname"
+                    placeholder="Playlist Name"
+                    required
+                  />
+                  <label htmlFor="desc"></label>
+                  <input
+                    type="text"
+                    id="desc"
+                    name="desc"
+                    placeholder="Description"
+                    required
+                  />
+                  <input
+                    type="radio"
+                    id="public"
+                    name="type"
+                    value="true"
+                    defaultChecked
+                    required
+                  />
+                  <label htmlFor="html">Public</label>
+                  <input
+                    type="radio"
+                    id="private"
+                    name="type"
+                    value="false"
+                    required
+                  />
+                  <label htmlFor="css">Private</label>
+                  <button type="submit">Create playlist</button>
+                </form>
+              </div>
+              <div>
+                <button onClick={logout}>Logout</button>
+              </div>
+            </div>
+          ) : (
+            <a
+              href={`${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=token&scope=${scope}`}
+            >
+              Login to Spotify to create playlist
+            </a>
+          )}
         </div>
       ) : (
         <div>Failed to load for some reason (Try refreshing page)</div>
