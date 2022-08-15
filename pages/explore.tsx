@@ -1,11 +1,8 @@
 import axios from "axios";
 import type { NextPage } from "next";
 import { useEffect, useState } from "react";
-import Image from "next/image";
-import ReactAudioPlayer from "react-audio-player";
 import Songinfo from "../components/songinfo";
 import Nav from "../components/nav";
-
 
 const Home: NextPage = () => {
   const clientId = process.env.NEXT_PUBLIC_CLIENT_ID;
@@ -22,7 +19,9 @@ const Home: NextPage = () => {
   const [liked, setLiked] = useState<any>({
     name: [],
     uri: [],
+    preview: [],
   });
+  const [autoplay, setAutoplay] = useState(false);
 
   // const [loop, setLoop] = useState(true);
 
@@ -85,9 +84,9 @@ const Home: NextPage = () => {
         type: "track",
         offset: randomOffset,
       },
-    }).then((res) => {
+    }).then(async (res) => {
       if (res.data.tracks.items.length === 0) {
-        return getNewTrack(tok);
+        return await getNewTrack(tok);
       } else {
         const item = res.data.tracks.items[randomTrack];
         let str = "";
@@ -130,14 +129,15 @@ const Home: NextPage = () => {
 
   return (
     // <div className="border-2 h-screen flex">
-    <div>
-      <Nav />
+    <div className="grid place-items-center h-screen border-2">
       <Songinfo
         track={track}
         liked={liked}
         setLiked={setLiked}
         token={token}
         getNewTrack={getNewTrack}
+        autoplay={autoplay}
+        setAutoplay={setAutoplay}
       />
     </div>
   );

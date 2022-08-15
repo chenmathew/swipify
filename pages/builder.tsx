@@ -26,6 +26,7 @@ const Home: NextPage = () => {
   });
   const [userToken, setUserToken] = useState("");
   const [userID, setUserID] = useState("");
+  const [autoplay, setAutoplay] = useState(false);
 
   // const [loop, setLoop] = useState(true);
 
@@ -174,6 +175,8 @@ const Home: NextPage = () => {
             setLiked={setLiked}
             token={token}
             getNewTrack={getNewTrack}
+            autoplay={autoplay}
+            setAutoplay={setAutoplay}
           />
           <div></div>
           <CreatePlaylist liked={liked} userID={userID} userToken={userToken} />
