@@ -47,20 +47,16 @@ const SongPreview: React.FC<SongPreviewProps> = ({ preview }) => {
   }, [preview]);
 
   return (
-    <div>
-      {
-        <div>
-          {isPlaying ? (
-            <button onClick={() => setIsPlaying(false)}>PAUSE</button>
-          ) : (
-            <button onClick={() => setIsPlaying(true)}>PLAY</button>
-          )}
-          <audio ref={inputEl} onEnded={() => setIsPlaying(false)}>
-            <source src={src} type="audio/mp3" />
-          </audio>
-        </div>
-      }
-    </div>
+    <>
+      {isPlaying ? (
+        <button onClick={() => setIsPlaying(false)}>PAUSE</button>
+      ) : (
+        <button onClick={() => setIsPlaying(true)}>PLAY</button>
+      )}
+      <audio ref={inputEl} onEnded={() => setIsPlaying(false)}>
+        <source src={src} type="audio/mp3" />
+      </audio>
+    </>
   );
 };
 
