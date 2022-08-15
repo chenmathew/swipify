@@ -14,9 +14,10 @@ TO DO:
     - This is so if there is a dupe in liked and current track, ignore, and can be used to set key
   - Make a post request to create a playlist https://developer.spotify.com/console/post-playlists/
     - Then add the tracks using the liked.uri https://developer.spotify.com/console/post-playlist-tracks/
-  Not so important
+  - After the user sends to playlist, reset state
   - Implement a UI
   - Break down components so it's not messy
+  - Fixed autoplay
 
 Future:
   - Make background color change depending on album cover
@@ -28,6 +29,7 @@ const Home: NextPage = () => {
   const clientSecret = process.env.NEXT_PUBLIC_CLIENT_SECRET;
   const [token, setToken] = useState("");
   const [track, setTrack] = useState({
+    id: "",
     name: "",
     artist: "",
     album: "",
@@ -37,6 +39,7 @@ const Home: NextPage = () => {
   });
   const [double, setDouble] = useState(false);
   const [liked, setLiked] = useState<any>({
+    id: [],
     name: [],
     uri: [],
   });
@@ -44,7 +47,7 @@ const Home: NextPage = () => {
 
   // const [loop, setLoop] = useState(true);
 
-  const randomOffset = Math.floor(Math.random() * 700);
+  const randomOffset = Math.floor(Math.random() * 1000);
   const randomTrack = Math.floor(Math.random() * 20);
 
   //Code taken from https://perryjanssen.medium.com/getting-random-tracks-using-the-spotify-api-61889b0c0c27
@@ -90,11 +93,12 @@ const Home: NextPage = () => {
         setToken(res.data.access_token);
         return res.data.access_token;
       });
-  const getNewTrack = async (res: any) => {
+
+  const getNewTrack = async (tok: any) => {
     await axios("https://api.spotify.com/v1/search", {
       method: "GET",
       headers: {
-        Authorization: "Bearer " + res,
+        Authorization: "Bearer " + tok,
         "Content-Type": "application/json",
       },
       params: {
@@ -103,28 +107,36 @@ const Home: NextPage = () => {
         offset: randomOffset,
       },
     }).then((res) => {
-      const item = res.data.tracks.items[randomTrack];
-      let str = "";
-      const artistArr = item.artists;
-      artistArr.map((artist: any, index: number) => {
-        if (index < item.artists.length - 1) str += `${artist.name}, `;
-        else str += artist.name;
-      });
-      setTrack({
-        name: item.name,
-        artist: str,
-        album: item.album.images[0].url,
-        link: item.external_urls.spotify,
-        prev: item.preview_url,
-        uri: item.uri,
-      });
+      console.log(res);
+      if (res.data.tracks.items.length === 0) {
+        getNewTrack(tok);
+      } else {
+        const item = res.data.tracks.items[randomTrack];
+        console.log(item);
+        let str = "";
+        const artistArr = item.artists;
+        artistArr.map((artist: any, index: number) => {
+          if (index < item.artists.length - 1) str += `${artist.name}, `;
+          else str += artist.name;
+        });
+        setTrack({
+          id: item.id,
+          name: item.name,
+          artist: str,
+          album: item.album.images[0].url,
+          link: item.external_urls.spotify,
+          prev: item.preview_url,
+          uri: item.uri,
+        });
+      }
       // setLoop(false);
     });
   };
+  console.log(track.name, track.prev);
 
   useEffect(() => {
-    getToken().then((res) => {
-      getNewTrack(res);
+    getToken().then(async (res) => {
+      await getNewTrack(res);
     });
 
     // Trying to get this to keep rerendering
@@ -144,6 +156,7 @@ const Home: NextPage = () => {
   const like = async () => {
     setDouble(true);
     setLiked({
+      id: [...liked.id, track.id],
       name: [...liked.name, track.name],
       uri: [...liked.uri, track.uri],
     });
@@ -164,27 +177,41 @@ const Home: NextPage = () => {
   };
 
   const updateLiked = () => {
+    const ids = liked.id.map((id: string) => id);
     return (
       <div>
-        {liked.name.map((item: string) => (
-          <div key={item}>{item}</div>
-        ))}
+        <div>
+          {liked.name.map((name: string, i: number) => (
+            <div key={ids[i]}>{name}</div>
+          ))}
+        </div>
       </div>
     );
   };
+
   return (
     <div>
-      {autoplay ? (
-        <button onClick={() => setAutoplay(false)}>Turn off autoplay</button>
-      ) : (
-        <button onClick={() => setAutoplay(true)}>Turn on autoplay</button>
-      )}
       {track.album != "" ? (
         <div>
+          <div>
+            {autoplay ? (
+              <button onClick={() => setAutoplay(false)}>
+                Turn off autoplay
+              </button>
+            ) : (
+              <button onClick={() => setAutoplay(true)}>
+                Turn on autoplay
+              </button>
+            )}
+          </div>
           <Image src={track.album} height="128" width="128" />
           <div>{track.artist}</div>
-          <div>{track.name}</div>
-          <ReactAudioPlayer src={track.prev} autoPlay={autoplay} controls />
+          <div>{track.name}</div>{" "}
+          {track.prev != null ? (
+            <ReactAudioPlayer src={track.prev} autoPlay={autoplay} controls />
+          ) : (
+            <div>There is no preview for this song</div>
+          )}
           <div>
             <button disabled={double} onClick={like} value={track.name}>
               Like
@@ -196,7 +223,7 @@ const Home: NextPage = () => {
           <div>{updateLiked()}</div>
         </div>
       ) : (
-        <div>Failed to load for some reason</div>
+        <div>Failed to load for some reason (Try refreshing page)</div>
       )}
     </div>
   );
