@@ -27,15 +27,24 @@ const Home: NextPage = () => {
   const router = useRouter();
 
   return (
-    <button
-      className="w-full h-full absolute text-5xl"
-      onClick={() => router.push("/explore")}
-    >
-      Click anywhere to enter site
-      {/* <div>
-        <Link href="/builder">Builder Mode</Link>
-      </div> */}
-    </button>
+    <div>
+      <div className="grid grid-cols-2">
+        <button
+          onClick={() => router.push("/explore")}
+          className="h-screen hover:text-red-300 hover:border-red-300 hover:border-2"
+        >
+          <div>Explorer Mode</div>
+          <div>No need to login, but cannot save playlists</div>
+        </button>
+        <button
+          className="h-screen hover:text-red-300 hover:border-red-300 hover:border-2"
+          onClick={() => router.push("/builder")}
+        >
+          <div>Builder Mode</div>
+          <div>No need to login, but cannot save playlists</div>
+        </button>
+      </div>
+    </div>
   );
 };
 export default Home;

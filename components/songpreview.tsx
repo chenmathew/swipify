@@ -50,9 +50,19 @@ const SongPreview: React.FC<SongPreviewProps> = ({ preview, autoplay }) => {
   return (
     <>
       {isPlaying ? (
-        <button onClick={() => setIsPlaying(false)}>PAUSE</button>
+        <button
+          onClick={() => setIsPlaying(false)}
+          className="hover:text-red-300"
+        >
+          PAUSE
+        </button>
       ) : (
-        <button onClick={() => setIsPlaying(true)}>PLAY</button>
+        <button
+          onClick={() => setIsPlaying(true)}
+          className="hover:text-red-300"
+        >
+          PLAY
+        </button>
       )}
       <audio
         ref={inputEl}

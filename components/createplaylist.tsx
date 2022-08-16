@@ -17,13 +17,14 @@ export const CreatePlaylist: React.FC<CreatePlaylistProps> = ({
     event.preventDefault();
     if (liked.name.length === 0) {
       console.log("error making playlist");
+      alert("Like some songs before creating playlist");
       return;
     }
 
     // Get data from the form.
     const data = {
       name: event.target.pname.value,
-      description: event.target.desc.value,
+      description: `Created with https://swipify.vercel.app/builder`,
       public: event.target.type.value,
     };
 
@@ -57,44 +58,52 @@ export const CreatePlaylist: React.FC<CreatePlaylistProps> = ({
               },
             }
           )
-          .then((_) => console.log("successfully added"))
-          .catch((err) => console.error(err));
+          .then((_) => alert("Successfully added playlist"))
+          .catch((err) => alert("Error adding playlist"));
       })
       .catch((err) => console.log(err));
   };
 
   return (
-    <div>
+    <>
       <form onSubmit={handleSubmit}>
         <label htmlFor="pname"></label>
-        <input
-          type="text"
-          id="pname"
-          name="pname"
-          placeholder="Playlist Name"
-          required
-        />
-        <label htmlFor="desc"></label>
+        <div>
+          <input
+            type="text"
+            id="pname"
+            name="pname"
+            placeholder="Playlist Name"
+            className="focus:outline-0 mb-2 bg-transparent"
+            required
+          />
+        </div>
+        {/* <label htmlFor="desc"></label>
         <input
           type="text"
           id="desc"
           name="desc"
           placeholder="Description"
+          className="bg-transparent mt-2 mb-2"
           required
-        />
-        <input
-          type="radio"
-          id="public"
-          name="type"
-          value="true"
-          defaultChecked
-          required
-        />
-        <label htmlFor="html">Public</label>
-        <input type="radio" id="private" name="type" value="false" required />
-        <label htmlFor="css">Private</label>
-        <button type="submit">Create playlist</button>
+        /> */}
+        <div className="grid grid-flow-col">
+          <input
+            type="radio"
+            id="public"
+            name="type"
+            value="true"
+            defaultChecked
+            required
+          />
+          <label htmlFor="html">Public</label>
+          <input type="radio" id="private" name="type" value="false" required />
+          <label htmlFor="css">Private</label>
+        </div>
+        <button type="submit" className="mt-2 hover:text-red-300 ">
+          Create playlist
+        </button>
       </form>
-    </div>
+    </>
   );
 };

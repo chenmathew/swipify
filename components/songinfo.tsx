@@ -11,11 +11,7 @@ interface songinfoProps {
   setAutoplay: any;
 }
 
-export const Songinfo: React.FC<songinfoProps> = ({
-  track,
-  autoplay,
-  setAutoplay,
-}) => {
+export const Songinfo: React.FC<songinfoProps> = ({ track, autoplay }) => {
   return (
     <div>
       {track.name != "" ? (
@@ -47,10 +43,10 @@ export const Songinfo: React.FC<songinfoProps> = ({
                 </div>
               </div>
               <div className="grid grid-flow-row mt-2">
-                <div className="lg:max-w-64 overflow-scroll whitespace-nowrap">
+                <div className="lg:max-w-64 overflow-scroll whitespace-nowrap no-scrollbar">
                   {track.artist}
                 </div>
-                <div className="max-w-32 max-h-32 lg:max-w-64 overflow-scroll whitespace-nowrap">
+                <div className="max-w-32 max-h-32 lg:max-w-64 overflow-scroll whitespace-nowrap no-scrollbar">
                   {track.name}
                 </div>
               </div>
@@ -59,7 +55,7 @@ export const Songinfo: React.FC<songinfoProps> = ({
                   <SongPreview preview={track.prev} autoplay={autoplay} />
                 </div>
               ) : (
-                <div className="overflow-scroll whitespace-nowrap">
+                <div className="overflow-scroll whitespace-nowrap no-scrollbar">
                   There is no preview for this song
                 </div>
               )}

@@ -4,6 +4,7 @@ import Songinfo from "../components/songinfo";
 import { getNewTrack, getToken } from "../components/helpers/tokenhelpers";
 import { LikedMusic } from "../components/likedmusic";
 import { LikeDislike } from "../components/likedislike";
+import Footer from "../components/footer";
 
 const Home: NextPage = () => {
   const clientId = process.env.NEXT_PUBLIC_CLIENT_ID;
@@ -53,7 +54,7 @@ const Home: NextPage = () => {
               setTrack={setTrack}
             />
           </div>
-          <div className="grid h-96 overflow-scroll">
+          <div className="grid h-96 overflow-scroll no-scrollbar">
             <LikedMusic
               track={track}
               token={token}
@@ -65,6 +66,7 @@ const Home: NextPage = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
