@@ -6,6 +6,8 @@ import Nav from "../components/nav";
 import { Songinfo } from "../components/songinfo";
 import { getRandomSearch } from "../components/helpers/randhelper";
 import { getNewTrack, getToken } from "../components/helpers/tokenhelpers";
+import { LikeDislike } from "../components/likedislike";
+import { LikedMusic } from "../components/likedmusic";
 
 const Home: NextPage = () => {
   const redirectUri = "http://localhost:3000/builder";
@@ -26,6 +28,7 @@ const Home: NextPage = () => {
     name: [],
     uri: [],
     preview: [],
+    artist: [],
   });
   const [userToken, setUserToken] = useState("");
   const [userID, setUserID] = useState("");
@@ -72,31 +75,39 @@ const Home: NextPage = () => {
   return (
     // <div className="border-2 h-screen flex">
     <div>
-      <Nav />
-      {userToken ? (
-        <div>
-          <Songinfo
-            track={track}
-            liked={liked}
-            setLiked={setLiked}
-            token={token}
-            autoplay={autoplay}
-            setAutoplay={setAutoplay}
-            setTrack={setTrack}
-          />
-          <div></div>
-          <CreatePlaylist liked={liked} userID={userID} userToken={userToken} />
-          <div>
-            <button onClick={logout}>Logout</button>
+      <div className="grid place-items-center h-screen">
+        <div className="fixed w-3/4 h-full max-h-96">
+          <div className="grid grid-cols-2">
+            <div className="grid place-content-center">
+              <Songinfo
+                track={track}
+                liked={liked}
+                setLiked={setLiked}
+                token={token}
+                autoplay={autoplay}
+                setAutoplay={setAutoplay}
+              />
+              <LikeDislike
+                setLiked={setLiked}
+                liked={liked}
+                track={track}
+                token={token}
+                setTrack={setTrack}
+              />
+            </div>
+            <div className="grid h-96 overflow-scroll">
+              <LikedMusic
+                track={track}
+                token={token}
+                liked={liked}
+                setLiked={setLiked}
+                autoplay={autoplay}
+                setTrack={setTrack}
+              />
+            </div>
           </div>
         </div>
-      ) : (
-        <a
-          href={`${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=token&scope=${scope}`}
-        >
-          Login to Spotify to create playlist
-        </a>
-      )}
+      </div>
     </div>
   );
 };

@@ -2,6 +2,8 @@ import type { NextPage } from "next";
 import { useEffect, useState } from "react";
 import Songinfo from "../components/songinfo";
 import { getNewTrack, getToken } from "../components/helpers/tokenhelpers";
+import { LikedMusic } from "../components/likedmusic";
+import { LikeDislike } from "../components/likedislike";
 
 const Home: NextPage = () => {
   const clientId = process.env.NEXT_PUBLIC_CLIENT_ID;
@@ -19,6 +21,7 @@ const Home: NextPage = () => {
     name: [],
     uri: [],
     preview: [],
+    artist: [],
   });
   const [autoplay, setAutoplay] = useState(false);
 
@@ -30,18 +33,36 @@ const Home: NextPage = () => {
   }, [clientId, clientSecret]);
 
   return (
-    <div className="grid place-items-center h-screen border-2">
-      <div className="fixed border-2 w-3/4">
+    <div className="grid place-items-center h-screen">
+      <div className="fixed w-3/4 h-full max-h-96">
         <div className="grid grid-cols-2">
-          <Songinfo
-            track={track}
-            liked={liked}
-            setLiked={setLiked}
-            token={token}
-            autoplay={autoplay}
-            setAutoplay={setAutoplay}
-            setTrack={setTrack}
-          />
+          <div className="grid place-content-center">
+            <Songinfo
+              track={track}
+              liked={liked}
+              setLiked={setLiked}
+              token={token}
+              autoplay={autoplay}
+              setAutoplay={setAutoplay}
+            />
+            <LikeDislike
+              setLiked={setLiked}
+              liked={liked}
+              track={track}
+              token={token}
+              setTrack={setTrack}
+            />
+          </div>
+          <div className="grid h-96 overflow-scroll">
+            <LikedMusic
+              track={track}
+              token={token}
+              liked={liked}
+              setLiked={setLiked}
+              autoplay={autoplay}
+              setTrack={setTrack}
+            />
+          </div>
         </div>
       </div>
     </div>

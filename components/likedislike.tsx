@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { getNewTrack } from "./helpers/tokenhelpers";
-import SongPreview from "./songpreview";
+import Image from "next/image";
+import { Down, Up } from "./helpers/svgs/svgs";
 
 interface LikeDislike {
   setLiked: any;
   liked: any;
   track: any;
   token: string;
-  autoplay: boolean;
   setTrack: any;
 }
 
@@ -19,12 +19,16 @@ export const LikeDislike: React.FC<LikeDislike> = ({
   setTrack,
 }) => {
   const [double, setDouble] = useState(false);
+  const [likeColor, setLikeColor] = useState<string>("#FFFFFF");
+  const [dislikeColor, setdisLikeColor] = useState("#FFFFFF");
+
   const like = async () => {
     setDouble(true);
     setLiked({
       name: [...liked.name, track.name],
       uri: [...liked.uri, track.uri],
       preview: [...liked.preview, track.prev],
+      artist: [...liked.artist, track.artist],
     });
     await getNewTrack(token, setTrack);
     setDouble(false);
@@ -35,66 +39,33 @@ export const LikeDislike: React.FC<LikeDislike> = ({
     setDouble(false);
   };
 
-  const deleteLiked = (e: any) => {
-    const index = e.target.value;
-    let newLikedNames = [...liked.name];
-    let newLikedURIs = [...liked.uri];
-    let newLikedPreviews = [...liked.preview];
-    if (index !== -1) {
-      newLikedNames.splice(index, 1);
-      newLikedURIs.splice(index, 1);
-      newLikedPreviews.splice(index, 1);
-      setLiked({
-        name: newLikedNames,
-        uri: newLikedURIs,
-        preview: newLikedPreviews,
-      });
-    }
-  };
-
-  const updateLiked = () => {
-    const uri = liked.uri.map((id: string) => id);
-    const preview = liked.preview.map((link: string) => link);
-    return (
-      <div>
-        {liked.name.map((name: string, i: number) => (
-          <div key={uri[i]}>
-            <div className="grid grid-flow-col border-2">
-              <div className="w-44 p-2 whitespace-nowrap overflow-scroll">
-                {name}
-              </div>
-              {preview[i] !== null ? (
-                <span className="w-40 p-2 whitespace-nowrap overflow-scroll">
-                  <SongPreview preview={preview[i]} />
-                </span>
-              ) : (
-                <span className="w-40 p-2 whitespace-nowrap overflow-scroll">
-                  No preview
-                </span>
-              )}
-              <span className="w-40 p-2">
-                <button onClick={deleteLiked} value={i}>
-                  Delete
-                </button>
-              </span>
-            </div>
-          </div>
-        ))}
-      </div>
-    );
-  };
-
   return (
     <div>
-      <div>
-        <button disabled={double} onClick={like} value={track.name}>
-          Like
-        </button>
+      <div className="grid place-content-center grid-cols-2">
+        <span className="grid place-content-center">
+          <button
+            disabled={double}
+            onClick={dislike}
+            className="lg:h-24 lg:w-24 w-12 h-12"
+            onMouseEnter={() => setdisLikeColor("#FAA0A0")}
+            onMouseLeave={() => setdisLikeColor("#FFFFFF")}
+          >
+            <Down color={dislikeColor} />
+          </button>
+        </span>
+        <span className="grid place-content-center">
+          <button
+            disabled={double}
+            onClick={like}
+            value={track.name}
+            className="lg:h-24 lg:w-24 w-12 h-12"
+            onMouseEnter={() => setLikeColor("#FAA0A0")}
+            onMouseLeave={() => setLikeColor("#FFFFFF")}
+          >
+            <Up color={likeColor} />
+          </button>
+        </span>
       </div>
-      <button disabled={double} onClick={dislike}>
-        Dislike
-      </button>
-      <div>{updateLiked()}</div>
     </div>
   );
 };

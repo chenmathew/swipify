@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { LikedMusic } from "./likedmusic";
 import SongPreview from "./songpreview";
 
 interface songinfoProps {
@@ -10,24 +9,19 @@ interface songinfoProps {
   token: string;
   autoplay: boolean;
   setAutoplay: any;
-  setTrack: any;
 }
 
 export const Songinfo: React.FC<songinfoProps> = ({
   track,
-  token,
-  liked,
-  setLiked,
   autoplay,
   setAutoplay,
-  setTrack,
 }) => {
   return (
     <div>
       {track.name != "" ? (
         <div>
           <div>
-            {autoplay ? (
+            {/* {autoplay ? (
               <button
                 onClick={() => {
                   setAutoplay(false);
@@ -41,34 +35,34 @@ export const Songinfo: React.FC<songinfoProps> = ({
                   setAutoplay(true);
                 }}
               >
-                Turn on autoplay {autoplay}
+                Turn on autoplay
               </button>
-            )}
+            )} */}
           </div>
-          <div className="border-2">
-            <div className="grid border-2 place-content-center text-center">
-              <div className="h-64 w-64 relative grid">
-                <Image src={track.album} layout="fill" priority />
+          <div className="lg:w-64 w-32">
+            <div className="grid place-content-center text-center">
+              <div className="grid place-content-center">
+                <div className="lg:h-64 lg:w-64 relative grid w-32 h-32">
+                  <Image src={track.album} layout="fill" priority />
+                </div>
               </div>
-              <div>{track.artist}</div>
-              <div>{track.name}</div>
+              <div className="grid grid-flow-row mt-2">
+                <div className="lg:max-w-64 overflow-scroll whitespace-nowrap">
+                  {track.artist}
+                </div>
+                <div className="max-w-32 max-h-32 lg:max-w-64 overflow-scroll whitespace-nowrap">
+                  {track.name}
+                </div>
+              </div>
               {track.prev != null ? (
                 <div>
-                  <SongPreview preview={track.prev} />
+                  <SongPreview preview={track.prev} autoplay={autoplay} />
                 </div>
               ) : (
-                <div>There is no preview for this song</div>
+                <div className="overflow-scroll whitespace-nowrap">
+                  There is no preview for this song
+                </div>
               )}
-            </div>
-            <div>
-              <LikedMusic
-                track={track}
-                token={token}
-                liked={liked}
-                setLiked={setLiked}
-                autoplay={autoplay}
-                setTrack={setTrack}
-              />
             </div>
           </div>
         </div>

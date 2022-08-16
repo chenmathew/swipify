@@ -7,9 +7,10 @@ import React, { useEffect, useRef, useState } from "react";
 
 interface SongPreviewProps {
   preview: string;
+  autoplay: boolean;
 }
 
-const SongPreview: React.FC<SongPreviewProps> = ({ preview }) => {
+const SongPreview: React.FC<SongPreviewProps> = ({ preview, autoplay }) => {
   const inputEl = useRef<any>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [src, setSrc] = useState(preview);
@@ -53,7 +54,11 @@ const SongPreview: React.FC<SongPreviewProps> = ({ preview }) => {
       ) : (
         <button onClick={() => setIsPlaying(true)}>PLAY</button>
       )}
-      <audio ref={inputEl} onEnded={() => setIsPlaying(false)}>
+      <audio
+        ref={inputEl}
+        onEnded={() => setIsPlaying(false)}
+        autoPlay={autoplay}
+      >
         <source src={src} type="audio/mp3" />
       </audio>
     </>

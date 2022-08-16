@@ -1,5 +1,6 @@
 import type { NextPage } from "next";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 /*
 Finished:
@@ -23,11 +24,18 @@ Future:
   - Login mode - login required
 */
 const Home: NextPage = () => {
+  const router = useRouter();
+
   return (
-    <div>
-      <Link href="/builder">Builder Mode</Link>
-      <Link href="/explore">Explore Mode</Link>
-    </div>
+    <button
+      className="w-full h-full absolute text-5xl"
+      onClick={() => router.push("/explore")}
+    >
+      Click anywhere to enter site
+      {/* <div>
+        <Link href="/builder">Builder Mode</Link>
+      </div> */}
+    </button>
   );
 };
 export default Home;
