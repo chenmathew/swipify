@@ -23,6 +23,7 @@ export const getToken = async (
       return res.data.access_token;
     });
 
+//  Chose to pass in setTrack because it works best for my design
 export const getNewTrack = async (tok: any, setTrack: any) => {
   const randomOffset = Math.floor(Math.random() * 1000);
   const randomTrack = Math.floor(Math.random() * 20);
@@ -60,3 +61,20 @@ export const getNewTrack = async (tok: any, setTrack: any) => {
     // setLoop(false);
   });
 };
+
+// export const getNewTrack = async (tok: any) => {
+//     const randomOffset = Math.floor(Math.random() * 1000);
+//     const response = await axios("https://api.spotify.com/v1/search", {
+//       method: "GET",
+//       headers: {
+//         Authorization: "Bearer " + tok,
+//         "Content-Type": "application/json",
+//       },
+//       params: {
+//         q: getRandomSearch(),
+//         type: "track",
+//         offset: randomOffset,
+//       },
+//     });
+//     return response;
+// };

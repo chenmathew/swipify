@@ -27,13 +27,11 @@ export const LikedMusic: React.FC<LikedMusicProps> = ({
       preview: [...liked.preview, track.prev],
     });
     await getNewTrack(token, setTrack);
-
-    // Try to force to rerender
-    // .catch(async () => {
-    //   console.log("works");
-    //   while (loop === true) getNewTrack(token);
-    //   setLoop(true);
-    // });
+    setDouble(false);
+  };
+  const dislike = async () => {
+    setDouble(true);
+    await getNewTrack(token, setTrack);
     setDouble(false);
   };
 
@@ -81,11 +79,6 @@ export const LikedMusic: React.FC<LikedMusicProps> = ({
     );
   };
 
-  const dislike = async () => {
-    setDouble(true);
-    await getNewTrack(token, setTrack);
-    setDouble(false);
-  };
   return (
     <div>
       <div>
