@@ -1,21 +1,22 @@
 import React, { useState } from "react";
+import { getNewTrack } from "./helpers/tokenhelpers";
 import SongPreview from "./songpreview";
 
 interface LikedMusicProps {
   setLiked: any;
   liked: any;
   track: any;
-  getNewTrack: any;
   token: string;
   autoplay: boolean;
+  setTrack: any;
 }
 
 export const LikedMusic: React.FC<LikedMusicProps> = ({
   setLiked,
   liked,
   track,
-  getNewTrack,
   token,
+  setTrack,
 }) => {
   const [double, setDouble] = useState(false);
   const like = async () => {
@@ -25,7 +26,7 @@ export const LikedMusic: React.FC<LikedMusicProps> = ({
       uri: [...liked.uri, track.uri],
       preview: [...liked.preview, track.prev],
     });
-    await getNewTrack(token);
+    await getNewTrack(token, setTrack);
 
     // Try to force to rerender
     // .catch(async () => {
@@ -82,7 +83,7 @@ export const LikedMusic: React.FC<LikedMusicProps> = ({
 
   const dislike = async () => {
     setDouble(true);
-    await getNewTrack(token);
+    await getNewTrack(token, setTrack);
     setDouble(false);
   };
   return (

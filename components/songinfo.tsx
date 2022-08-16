@@ -7,20 +7,20 @@ interface songinfoProps {
   setLiked: any;
   liked: any;
   track: any;
-  getNewTrack: any;
   token: string;
   autoplay: boolean;
   setAutoplay: any;
+  setTrack: any;
 }
 
 export const Songinfo: React.FC<songinfoProps> = ({
   track,
   token,
-  getNewTrack,
   liked,
   setLiked,
   autoplay,
   setAutoplay,
+  setTrack,
 }) => {
   return (
     <div>
@@ -75,10 +75,10 @@ export const Songinfo: React.FC<songinfoProps> = ({
           <LikedMusic
             track={track}
             token={token}
-            getNewTrack={getNewTrack}
             liked={liked}
             setLiked={setLiked}
             autoplay={autoplay}
+            setTrack={setTrack}
           />
         </div>
       ) : (
