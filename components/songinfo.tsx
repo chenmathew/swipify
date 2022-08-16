@@ -45,41 +45,32 @@ export const Songinfo: React.FC<songinfoProps> = ({
               </button>
             )}
           </div>
-          <div className="grid border-2 place-content-center text-center">
-            <div className="h-64 w-64 relative grid">
-              <Image src={track.album} layout="fill" priority />
-            </div>
-            <div>{track.artist}</div>
-            <div>{track.name}</div>
-            {track.prev != null ? (
-              <div id="AUDIO">
-                {/* <ReactAudioPlayer
-                  src={track.prev}
-                  autoPlay={autoplay}
-                  controls
-                /> */}
-                {/* {isPlaying ? (
-                  <button onClick={pause}>PAUSE</button>
-                ) : (
-                  <button onClick={play}>PLAY</button>
-                )}
-                <audio ref={inputEl} controls>
-                  <source src={track.prev} type="audio/mp3" />
-                </audio> */}
-                <SongPreview preview={track.prev} />
+          <div className="border-2">
+            <div className="grid border-2 place-content-center text-center">
+              <div className="h-64 w-64 relative grid">
+                <Image src={track.album} layout="fill" priority />
               </div>
-            ) : (
-              <div>There is no preview for this song</div>
-            )}
+              <div>{track.artist}</div>
+              <div>{track.name}</div>
+              {track.prev != null ? (
+                <div>
+                  <SongPreview preview={track.prev} />
+                </div>
+              ) : (
+                <div>There is no preview for this song</div>
+              )}
+            </div>
+            <div>
+              <LikedMusic
+                track={track}
+                token={token}
+                liked={liked}
+                setLiked={setLiked}
+                autoplay={autoplay}
+                setTrack={setTrack}
+              />
+            </div>
           </div>
-          <LikedMusic
-            track={track}
-            token={token}
-            liked={liked}
-            setLiked={setLiked}
-            autoplay={autoplay}
-            setTrack={setTrack}
-          />
         </div>
       ) : (
         <div>Failed to load for some reason (Try refreshing page)</div>

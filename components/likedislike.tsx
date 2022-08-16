@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { getNewTrack } from "./helpers/tokenhelpers";
 import SongPreview from "./songpreview";
 
-interface LikedMusicProps {
+interface LikeDislike {
   setLiked: any;
   liked: any;
   track: any;
@@ -11,7 +11,7 @@ interface LikedMusicProps {
   setTrack: any;
 }
 
-export const LikedMusic: React.FC<LikedMusicProps> = ({
+export const LikeDislike: React.FC<LikeDislike> = ({
   setLiked,
   liked,
   track,
@@ -86,16 +86,14 @@ export const LikedMusic: React.FC<LikedMusicProps> = ({
 
   return (
     <div>
-      <span>
+      <div>
         <button disabled={double} onClick={like} value={track.name}>
           Like
         </button>
-      </span>
-      <span>
-        <button disabled={double} onClick={dislike}>
-          Dislike
-        </button>
-      </span>
+      </div>
+      <button disabled={double} onClick={dislike}>
+        Dislike
+      </button>
       <div>{updateLiked()}</div>
     </div>
   );

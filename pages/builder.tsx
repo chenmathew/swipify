@@ -25,31 +25,17 @@ const Home: NextPage = () => {
   const [liked, setLiked] = useState<any>({
     name: [],
     uri: [],
+    preview: [],
   });
   const [userToken, setUserToken] = useState("");
   const [userID, setUserID] = useState("");
   const [autoplay, setAutoplay] = useState(false);
-
-  // const [loop, setLoop] = useState(true);
 
   useEffect(() => {
     getToken(clientId, clientSecret).then(async (res) => {
       setToken(res);
       await getNewTrack(res, setTrack);
     });
-
-    // Trying to get this to keep rerendering
-    //.catch(async () => {
-    //     console.log("lol");
-    //     while (loop === true) {
-    //       setTimeout(async () => {
-    //         if (loop === true) await getNewTrack(token);
-    //       }),
-    //         5000;
-    //     }
-    //   });
-    //   setLoop(true);
-    // });
   }, [clientId, clientSecret]);
 
   useEffect(() => {
