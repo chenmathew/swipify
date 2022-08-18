@@ -42,3 +42,9 @@ a {
     background: black;
   }
 }
+
+a:hover {
+  --tw-text-opacity: 1;
+
+  color: "#FAA0A0";
+}

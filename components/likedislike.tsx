@@ -29,6 +29,7 @@ export const LikeDislike: React.FC<LikeDislike> = ({
       uri: [...liked.uri, track.uri],
       preview: [...liked.preview, track.prev],
       artist: [...liked.artist, track.artist],
+      url: [...liked.url, track.link],
     });
     await getNewTrack(token, setTrack);
     setDouble(false);
@@ -57,7 +58,6 @@ export const LikeDislike: React.FC<LikeDislike> = ({
           <button
             disabled={double}
             onClick={like}
-            value={track.name}
             className="lg:h-24 lg:w-24 w-12 h-12"
             onMouseEnter={() => setLikeColor("#FAA0A0")}
             onMouseLeave={() => setLikeColor("#FFFFFF")}

@@ -18,16 +18,19 @@ export const LikedMusic: React.FC<LikedMusicProps> = ({ setLiked, liked }) => {
     let newLikedURIs = [...liked.uri];
     let newLikedPreviews = [...liked.preview];
     let newLikedArtist = [...liked.artist];
+    let newLikedUrl = [...liked.url];
     if (index !== -1) {
       newLikedNames.splice(index, 1);
       newLikedURIs.splice(index, 1);
       newLikedPreviews.splice(index, 1);
       newLikedArtist.splice(index, 1);
+      newLikedUrl.splice(index, 1);
       setLiked({
         name: newLikedNames,
         uri: newLikedURIs,
         preview: newLikedPreviews,
         artist: newLikedArtist,
+        url: newLikedUrl,
       });
     }
   };
@@ -42,6 +45,10 @@ export const LikedMusic: React.FC<LikedMusicProps> = ({ setLiked, liked }) => {
       .reverse()
       .map((link: string) => link);
     const artist = liked.artist
+      .slice(0)
+      .reverse()
+      .map((res: string) => res);
+    const url = liked.url
       .slice(0)
       .reverse()
       .map((res: string) => res);
@@ -60,7 +67,14 @@ export const LikedMusic: React.FC<LikedMusicProps> = ({ setLiked, liked }) => {
             <div key={uri[i]} className="m-2">
               <div className="grid grid-flow-col">
                 <div className="w-44 p-2 whitespace-nowrap overflow-scroll no-scrollbar">
-                  {name}
+                  <a
+                    href={url[i]}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-red-300"
+                  >
+                    {name}
+                  </a>
                 </div>
                 <div className="w-44 p-2 whitespace-nowrap overflow-scroll no-scrollbar">
                   {artist[i]}

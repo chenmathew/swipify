@@ -23,6 +23,7 @@ const Home: NextPage = () => {
     uri: [],
     preview: [],
     artist: [],
+    url: [],
   });
   const [autoplay, setAutoplay] = useState(false);
 
@@ -34,10 +35,10 @@ const Home: NextPage = () => {
   }, [clientId, clientSecret]);
 
   return (
-    <div className="grid place-items-center h-screen">
-      <div className="fixed w-3/4 h-full max-h-96">
-        <div className="grid grid-cols-2">
-          <div className="grid place-content-center">
+    <div className="grid place-items-center h-screen w-screen">
+      <div className="lg:fixed w-3/4 h-full max-h-96">
+        <div className="grid lg:grid-cols-2">
+          <div className="lg:grid lg:place-content-center">
             <Songinfo
               track={track}
               liked={liked}

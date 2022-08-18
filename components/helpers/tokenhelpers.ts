@@ -21,6 +21,10 @@ export const getToken = async (
     )
     .then((res) => {
       return res.data.access_token;
+    })
+    .catch((res) => {
+      alert("Delete your cookies for the site");
+      return;
     });
 
 //  Chose to pass in setTrack because it works best for my design
